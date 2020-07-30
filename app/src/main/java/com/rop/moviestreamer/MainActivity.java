@@ -1,13 +1,22 @@
 package com.rop.moviestreamer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.View;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.rop.moviestreamer.adapter.BannerMoviesPagerAdapter;
+import com.rop.moviestreamer.adapter.MainRecyclerAdapter;
+import com.rop.moviestreamer.model.AllCategory;
 import com.rop.moviestreamer.model.BannerMovies;
+import com.rop.moviestreamer.model.CategoryItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
     List<BannerMovies> movieBannerList;
     List<BannerMovies> kidsBannerList;
 
+    //main recyclerView
+    MainRecyclerAdapter mainRecyclerAdapter;
+    RecyclerView mainRecycler;
+    List<AllCategory> allCategoryList;
+
+    NestedScrollView nestedScrollView;
+    AppBarLayout appBarLayout;
+
+
 
 
 
@@ -34,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        appBarLayout = findViewById(R.id.appbar);
+        nestedScrollView = findViewById(R.id.nested_scroll);
         tabCategory = findViewById(R.id.tablayout);
         tabIndicator = findViewById(R.id.tab_indicator);
 
@@ -75,18 +95,23 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()){
                     case 0:
                         setBannerMoviesPagerAdapter(homeMoviesList);
+                        setScrollDefaultState();
                         return;
                     case 1:
                         setBannerMoviesPagerAdapter(tvShowBannerList);
+                        setScrollDefaultState();
                         return;
                     case 2:
                         setBannerMoviesPagerAdapter(movieBannerList);
+                        setScrollDefaultState();
                         return;
                     case 3:
                         setBannerMoviesPagerAdapter(kidsBannerList);
+                        setScrollDefaultState();
                         return;
                     default:
                         setBannerMoviesPagerAdapter(homeMoviesList);
+                        setScrollDefaultState();
                 }
             }
 
@@ -100,6 +125,32 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        // first we will add item data
+        List<CategoryItem> homeCatListItem = new ArrayList<>();
+        homeCatListItem.add(new CategoryItem(1,"Iron Man","https://elintransigente.com/wp-content/uploads/2020/07/The-Walking-Dead-1.jpg?w=1024?w=1000&h=600&crop=1",""));
+        homeCatListItem.add(new CategoryItem(2,"The Avengers","https://i.ytimg.com/vi/fI_CqtIr2hg/maxresdefault.jpg",""));
+        homeCatListItem.add(new CategoryItem(3,"Sonic","https://i.ytimg.com/vi/tKRdXKapt1s/maxresdefault.jpg",""));
+        homeCatListItem.add(new CategoryItem(4,"Avatar","https://i.ytimg.com/vi/2SrVzHNIp3g/maxresdefault.jpg",""));
+
+        List<CategoryItem> homeCatListItem1 = new ArrayList<>();
+        homeCatListItem1.add(new CategoryItem(1,"Dragon Ball","https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/jeffbiwuls/209888436/294c49be-6d4d-40f5-b44f-e7713ea4f9b4/thumb/customdeef0f820ff726e7-640x360.jpeg",""));
+        homeCatListItem1.add(new CategoryItem(2,"Cars","https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/styles/480/public/media/image/2017/07/cars-3.jpg?itok=Q2YBLxRz",""));
+        homeCatListItem1.add(new CategoryItem(3,"The mask","https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_1000,h_600/https://wipy.tv/wp-content/uploads/2020/01/Jim-Carrey-podr%C3%ADa-participar-en-%E2%80%98The-Mask-2%E2%80%99.jpg",""));
+        homeCatListItem1.add(new CategoryItem(4,"Dead pool","https://i.blogs.es/d50a8e/deadpool-1200x675/1366_2000.jpeg",""));
+
+        allCategoryList = new ArrayList<>();
+
+        allCategoryList.add(new AllCategory(1,"Wath next TV and movies", homeCatListItem));
+        allCategoryList.add(new AllCategory(2,"Movies in Hindi",homeCatListItem1));
+        allCategoryList.add(new AllCategory(3,"Kids and family",homeCatListItem));
+        allCategoryList.add(new AllCategory(4,"Amazon Original Series",homeCatListItem1));
+        allCategoryList.add(new AllCategory(3,"Kids and family",homeCatListItem));
+        allCategoryList.add(new AllCategory(4,"Amazon Original Series",homeCatListItem1));
+
+
+        setMainRecycler(allCategoryList);
+
     }
 
     private void setBannerMoviesPagerAdapter(List<BannerMovies> bannerMoviesList){
@@ -111,6 +162,20 @@ public class MainActivity extends AppCompatActivity {
         Timer sliderTimer = new Timer();
         sliderTimer.scheduleAtFixedRate(new AutoSlider(),400,6000);
         tabIndicator.setupWithViewPager(bannerMoviesViewPager);
+    }
+
+    private void setMainRecycler(List<AllCategory> allCategoryList){
+        mainRecycler = findViewById(R.id.main_recycler);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
+        mainRecycler.setLayoutManager(layoutManager);
+        mainRecyclerAdapter = new MainRecyclerAdapter(this,allCategoryList);
+        mainRecycler.setAdapter(mainRecyclerAdapter);
+    }
+
+    private void setScrollDefaultState(){
+        nestedScrollView.fullScroll(View.FOCUS_UP);
+        nestedScrollView.scrollTo(0,0);
+        appBarLayout.setExpanded(true);
     }
 
     class AutoSlider extends TimerTask{
