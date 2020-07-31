@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rop.moviestreamer.R;
 import com.rop.moviestreamer.model.AllCategory;
@@ -32,9 +33,16 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MainViewHolder holder, final int position) {
         holder.categoryName.setText(allCategoryList.get(position).getCategoryTitle());
         setItemRecycler(holder.itemRecycler,allCategoryList.get(position).getCategoryItemList());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context,allCategoryList.get(position).getCategoryTitle()+"",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

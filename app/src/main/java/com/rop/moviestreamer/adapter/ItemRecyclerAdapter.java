@@ -1,12 +1,15 @@
 package com.rop.moviestreamer.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.rop.moviestreamer.MovieDetails;
 import com.rop.moviestreamer.R;
 import com.rop.moviestreamer.model.CategoryItem;
 
@@ -31,8 +34,21 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, final int position) {
         Glide.with(context).load(categoryItemList.get(position).getImageUrl()).into(holder.itemImage);
+
+        holder.itemImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MovieDetails.class);
+                intent.putExtra("movieId",categoryItemList.get(position).getId());
+                intent.putExtra("movieName",categoryItemList.get(position).getMovieName());
+                intent.putExtra("movieImageUrl",categoryItemList.get(position).getImageUrl());
+                intent.putExtra("movieFile",categoryItemList.get(position).getFileUrl());
+
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
